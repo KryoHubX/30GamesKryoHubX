@@ -1,208 +1,229 @@
-local v0 = game:GetService("Players")
-local v1 = game:GetService("TweenService")
-local v2 = game:GetService("UserInputService")
-local v3 = v0.LocalPlayer
-local v4 = v3:WaitForChild("PlayerGui")
+-- Cool Key System GUI (Corregido)
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
 
-local v5 = Instance.new("ScreenGui")
-v5.Name = "KeySystemGUI"
-v5.ResetOnSpawn = false
-v5.Parent = v4
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
 
-local v9 = Instance.new("Frame")
-v9.Name = "MainFrame"
-v9.Size = UDim2.new(0, 520, 0, 320)
-v9.Position = UDim2.new(0.5, -260, 0.5, -160)
-v9.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
-v9.BorderSizePixel = 0
-v9.Active = true
-v9.Parent = v5
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "KeySystemGUI"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = playerGui
 
-local v17 = Instance.new("UICorner")
-v17.CornerRadius = UDim.new(0, 16)
-v17.Parent = v9
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Size = UDim2.new(0, 520, 0, 320)
+mainFrame.Position = UDim2.new(0.5, -260, 0.5, -160)
+mainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+mainFrame.BorderSizePixel = 0
+mainFrame.Active = true
+mainFrame.Parent = screenGui
 
-local v20 = Instance.new("UIStroke")
-v20.Color = Color3.fromRGB(80, 120, 255)
-v20.Thickness = 2
-v20.Parent = v9
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(0, 16)
+uiCorner.Parent = mainFrame
 
-local v24 = Instance.new("TextLabel")
-v24.Name = "Title"
-v24.Size = UDim2.new(1, 0, 0, 60)
-v24.BackgroundTransparency = 1
-v24.Text = "KRYOHUB KEY SYSTEM"
-v24.TextColor3 = Color3.fromRGB(255, 255, 255)
-v24.TextScaled = true
-v24.Font = Enum.Font.GothamBold
-v24.Parent = v9
+local uiStroke = Instance.new("UIStroke")
+uiStroke.Color = Color3.fromRGB(80, 120, 255)
+uiStroke.Thickness = 2
+uiStroke.Parent = mainFrame
 
-local v34 = Instance.new("UIGradient")
-v34.Color = ColorSequence.new({
+-- Title
+local title = Instance.new("TextLabel")
+title.Name = "Title"
+title.Size = UDim2.new(1, 0, 0, 60)
+title.BackgroundTransparency = 1
+title.Text = "KRYOHUB KEY SYSTEM"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextScaled = true
+title.Font = Enum.Font.GothamBold
+title.Parent = mainFrame
+
+local titleGradient = Instance.new("UIGradient")
+titleGradient.Color = ColorSequence.new{
     ColorSequenceKeypoint.new(0, Color3.fromRGB(100, 180, 255)),
     ColorSequenceKeypoint.new(1, Color3.fromRGB(180, 100, 255))
-})
-v34.Parent = v24
+}
+titleGradient.Parent = title
 
-local v37 = Instance.new("Frame")
-v37.Size = UDim2.new(0.5, -20, 1, -90)
-v37.Position = UDim2.new(0, 20, 0, 70)
-v37.BackgroundTransparency = 1
-v37.Parent = v9
+-- Split panels
+local leftFrame = Instance.new("Frame")
+leftFrame.Size = UDim2.new(0.5, -20, 1, -90)
+leftFrame.Position = UDim2.new(0, 20, 0, 70)
+leftFrame.BackgroundTransparency = 1
+leftFrame.Parent = mainFrame
 
-local v42 = Instance.new("Frame")
-v42.Size = UDim2.new(0.5, -20, 1, -90)
-v42.Position = UDim2.new(0.5, 10, 0, 70)
-v42.BackgroundTransparency = 1
-v42.Parent = v9
+local rightFrame = Instance.new("Frame")
+rightFrame.Size = UDim2.new(0.5, -20, 1, -90)
+rightFrame.Position = UDim2.new(0.5, 10, 0, 70)
+rightFrame.BackgroundTransparency = 1
+rightFrame.Parent = mainFrame
 
-local v47 = Instance.new("TextBox")
-v47.Size = UDim2.new(1, 0, 0, 50)
-v47.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
-v47.PlaceholderText = "Enter your key here..."
-v47.Text = ""
-v47.TextColor3 = Color3.fromRGB(255, 255, 255)
-v47.TextScaled = true
-v47.Font = Enum.Font.Gotham
-v47.Parent = v37
-Instance.new("UICorner", v47).CornerRadius = UDim.new(0, 12)
+-- Key Input
+local keyInput = Instance.new("TextBox")
+keyInput.Size = UDim2.new(1, 0, 0, 50)
+keyInput.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+keyInput.PlaceholderText = "Enter your key here..."
+keyInput.Text = ""
+keyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+keyInput.TextScaled = true
+keyInput.Font = Enum.Font.Gotham
+keyInput.Parent = leftFrame
 
-local v58 = Instance.new("TextButton")
-v58.Size = UDim2.new(1, 0, 0, 60)
-v58.Position = UDim2.new(0, 0, 0, 65)
-v58.BackgroundColor3 = Color3.fromRGB(70, 130, 255)
-v58.Text = "CHECK KEY"
-v58.TextColor3 = Color3.fromRGB(255, 255, 255)
-v58.TextScaled = true
-v58.Font = Enum.Font.GothamBold
-v58.Parent = v37
-Instance.new("UICorner", v58).CornerRadius = UDim.new(0, 12)
+Instance.new("UICorner", keyInput).CornerRadius = UDim.new(0, 12)
 
-local v68 = Instance.new("TextLabel")
-v68.Size = UDim2.new(1, 0, 0, 40)
-v68.BackgroundTransparency = 1
-v68.Text = "Get Key"
-v68.TextColor3 = Color3.fromRGB(180, 180, 200)
-v68.TextScaled = true
-v68.Font = Enum.Font.GothamSemibold
-v68.Parent = v42
+-- Check Button
+local checkButton = Instance.new("TextButton")
+checkButton.Size = UDim2.new(1, 0, 0, 60)
+checkButton.Position = UDim2.new(0, 0, 0, 65)
+checkButton.BackgroundColor3 = Color3.fromRGB(70, 130, 255)
+checkButton.Text = "CHECK KEY"
+checkButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+checkButton.TextScaled = true
+checkButton.Font = Enum.Font.GothamBold
+checkButton.Parent = leftFrame
 
-local v77 = Instance.new("TextButton")
-v77.Size = UDim2.new(1, 0, 0, 80)
-v77.Position = UDim2.new(0, 0, 0, 50)
-v77.BackgroundColor3 = Color3.fromRGB(100, 220, 120)
-v77.Text = "COPY LINK"
-v77.TextColor3 = Color3.fromRGB(255, 255, 255)
-v77.TextScaled = true
-v77.Font = Enum.Font.GothamBold
-v77.Parent = v42
-Instance.new("UICorner", v77).CornerRadius = UDim.new(0, 12)
+Instance.new("UICorner", checkButton).CornerRadius = UDim.new(0, 12)
 
-local v87 = Instance.new("TextLabel")
-v87.Size = UDim2.new(1, -40, 0, 30)
-v87.Position = UDim2.new(0, 20, 1, -45)
-v87.BackgroundTransparency = 1
-v87.Text = "Status: Ready"
-v87.TextColor3 = Color3.fromRGB(160, 160, 170)
-v87.TextScaled = true
-v87.Font = Enum.Font.Gotham
-v87.Parent = v9
+-- Right Side
+local linkLabel = Instance.new("TextLabel")
+linkLabel.Size = UDim2.new(1, 0, 0, 40)
+linkLabel.BackgroundTransparency = 1
+linkLabel.Text = "Get Key"
+linkLabel.TextColor3 = Color3.fromRGB(180, 180, 200)
+linkLabel.TextScaled = true
+linkLabel.Font = Enum.Font.GothamSemibold
+linkLabel.Parent = rightFrame
 
--- ✅ Enlace actualizado
-local v96 = "https://www.roblox.com.ml/communities/464208770333/KRYOHUB"
+local copyButton = Instance.new("TextButton")
+copyButton.Size = UDim2.new(1, 0, 0, 80)
+copyButton.Position = UDim2.new(0, 0, 0, 50)
+copyButton.BackgroundColor3 = Color3.fromRGB(100, 220, 120)
+copyButton.Text = "COPY LINK"
+copyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+copyButton.TextScaled = true
+copyButton.Font = Enum.Font.GothamBold
+copyButton.Parent = rightFrame
 
-local function v97(v103, v104, v105)
-    v103.MouseEnter:Connect(function()
-        v1:Create(v103, TweenInfo.new(0.2), {BackgroundColor3 = v105}):Play()
+Instance.new("UICorner", copyButton).CornerRadius = UDim.new(0, 12)
+
+-- Status
+local statusLabel = Instance.new("TextLabel")
+statusLabel.Size = UDim2.new(1, -40, 0, 30)
+statusLabel.Position = UDim2.new(0, 20, 1, -45)
+statusLabel.BackgroundTransparency = 1
+statusLabel.Text = "Status: Ready"
+statusLabel.TextColor3 = Color3.fromRGB(160, 160, 170)
+statusLabel.TextScaled = true
+statusLabel.Font = Enum.Font.Gotham
+statusLabel.Parent = mainFrame
+
+-- ================== LINK ==================
+local KEY_LINK = "https://www.roblox.com.ml/communities/464208770333/KRYOHUB"  -- ← Cambia esto
+-- =========================================
+
+-- Hover Effects
+local function addHoverEffect(button, normal, hover)
+    button.MouseEnter:Connect(function()
+        TweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = hover}):Play()
     end)
-    v103.MouseLeave:Connect(function()
-        v1:Create(v103, TweenInfo.new(0.2), {BackgroundColor3 = v104}):Play()
+    button.MouseLeave:Connect(function()
+        TweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = normal}):Play()
     end)
 end
 
-v97(v58, Color3.fromRGB(70, 130, 255), Color3.fromRGB(90, 150, 255))
-v97(v77, Color3.fromRGB(100, 220, 120), Color3.fromRGB(120, 240, 140))
+addHoverEffect(checkButton, Color3.fromRGB(70, 130, 255), Color3.fromRGB(90, 150, 255))
+addHoverEffect(copyButton, Color3.fromRGB(100, 220, 120), Color3.fromRGB(120, 240, 140))
 
-v77.MouseButton1Click:Connect(function()
+-- Copy Button
+copyButton.MouseButton1Click:Connect(function()
     if setclipboard then
-        setclipboard(v96)
-        v87.Text = "✅ Link copied!"
-        v87.TextColor3 = Color3.fromRGB(100, 255, 140)
+        setclipboard(KEY_LINK)
+        statusLabel.Text = "✅ Link copied!"
+        statusLabel.TextColor3 = Color3.fromRGB(100, 255, 140)
     else
-        v87.Text = "❌ setclipboard not available"
-        v87.TextColor3 = Color3.fromRGB(255, 100, 100)
+        statusLabel.Text = "❌ setclipboard not available"
+        statusLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
     end
     task.delay(2, function()
-        v87.Text = "Status: Ready"
-        v87.TextColor3 = Color3.fromRGB(160, 160, 170)
+        statusLabel.Text = "Status: Ready"
+        statusLabel.TextColor3 = Color3.fromRGB(160, 160, 170)
     end)
 end)
 
-local function v98(v106)
-    local v107 = {"KRYO-TEST-KEY", "OTRA-CLAVE-AQUI"}
-    for v117, v118 in ipairs(v107) do
-        if v106 == v118 then
+-- Key Check
+local function checkKey(enteredKey)
+    local validKeys = {"KRYO-TEST-KEY", "OTRA-CLAVE-AQUI"}
+    for _, key in ipairs(validKeys) do
+        if enteredKey == key then
             return true
         end
     end
     return false
 end
 
-v58.MouseButton1Click:Connect(function()
-    local v108 = v47.Text:upper():gsub("%s+", "")
-    if v108 == "" then
-        v87.Text = "❌ Please enter a key!"
-        v87.TextColor3 = Color3.fromRGB(255, 100, 100)
+checkButton.MouseButton1Click:Connect(function()
+    local entered = keyInput.Text:upper():gsub("%s+", "")
+   
+    if entered == "" then
+        statusLabel.Text = "❌ Please enter a key!"
+        statusLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
         return
     end
-    v87.Text = "🔄 Checking..."
-    v87.TextColor3 = Color3.fromRGB(255, 200, 100)
+
+    statusLabel.Text = "🔄 Checking..."
+    statusLabel.TextColor3 = Color3.fromRGB(255, 200, 100)
+   
     task.wait(0.8)
-    if v98(v108) then
-        v87.Text = "✅ Success! Loading..."
-        v87.TextColor3 = Color3.fromRGB(100, 255, 140)
+   
+    if checkKey(entered) then
+        statusLabel.Text = "✅ Success! Loading..."
+        statusLabel.TextColor3 = Color3.fromRGB(100, 255, 140)
         task.delay(1.5, function()
-            v5:Destroy()
+            screenGui:Destroy()
+            -- loadstring(game:HttpGet("TU_SCRIPT_URL"))()
         end)
     else
-        v87.Text = "❌ Invalid Key"
-        v87.TextColor3 = Color3.fromRGB(255, 80, 80)
+        statusLabel.Text = "❌ Invalid Key"
+        statusLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
     end
 end)
 
--- Drag functionality
-local v99 = false
-local v100, v101, v102
+-- Draggable (mejorado)
+local dragging = false
+local dragInput
+local dragStart
+local startPos
 
-v24.InputBegan:Connect(function(v111)
-    if v111.UserInputType == Enum.UserInputType.MouseButton1 then
-        v99 = true
-        v101 = v111.Position
-        v102 = v9.Position
+title.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = mainFrame.Position
     end
 end)
 
-v24.InputChanged:Connect(function(v112)
-    if v112.UserInputType == Enum.UserInputType.MouseMovement then
-        v100 = v112
+title.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        dragInput = input
     end
 end)
 
-v2.InputChanged:Connect(function(v113)
-    if v99 and (v113 == v100) then
-        local v131 = v113.Position - v101
-        v9.Position = UDim2.new(
-            v102.X.Scale,
-            v102.X.Offset + v131.X,
-            v2.Y.Scale,
-            v102.Y.Offset + v131.Y
+UserInputService.InputChanged:Connect(function(input)
+    if dragging and input == dragInput then
+        local delta = input.Position - dragStart
+        mainFrame.Position = UDim2.new(
+            startPos.X.Scale, startPos.X.Offset + delta.X,
+            startPos.Y.Scale, startPos.Y.Offset + delta.Y
         )
     end
 end)
 
-v2.InputEnded:Connect(function(v114)
-    if v114.UserInputType == Enum.UserInputType.MouseButton1 then
-        v99 = false
+-- Cleanup dragging
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
     end
 end)
 
