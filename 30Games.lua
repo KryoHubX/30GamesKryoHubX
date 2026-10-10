@@ -120,7 +120,7 @@ statusLabel.Font = Enum.Font.Gotham
 statusLabel.Parent = mainFrame
 
 -- ================== LINK ==================
-local KEY_LINK = "https://roblox.com.bz/communities/5527015584/"  -- ← Cambia esto por tu link real
+local KEY_LINK = "sss"  -- ← Cambia esto por tu link real
 -- =========================================
 
 -- Hover Effects
@@ -138,13 +138,12 @@ addHoverEffect(copyButton, Color3.fromRGB(100, 220, 120), Color3.fromRGB(120, 24
 
 -- ================== CLIPBOARD UNIVERSAL ==================
 local function copyToClipboard(text)
-    -- Métodos usados por distintos executors
     local methods = {
-        "setclipboard",    -- Synapse, Fluxus, Delta, Krnl, Script-Ware, Xeno, Solara
-        "toclipboard",     -- Algunos viejos
-        "set_clipboard",   -- Otros
-        "Clipboard",       -- Raro pero existe
-        "WriteClipboard",  -- Algunos más
+        "setclipboard",
+        "toclipboard",
+        "set_clipboard",
+        "Clipboard",
+        "WriteClipboard",
     }
 
     for _, name in ipairs(methods) do
@@ -163,7 +162,6 @@ local function copyToClipboard(text)
         end
     end
 
-    -- Fallback: servicio Clipboard (si el executor lo expone)
     local ok = pcall(function()
         game:GetService("Clipboard"):SetClipboard(text)
     end)
@@ -175,15 +173,14 @@ end
 
 -- Copy Button
 copyButton.MouseButton1Click:Connect(function()
-    local success, method = copyToClipboard(KEY_LINK)
+    local success, _ = copyToClipboard(KEY_LINK)
 
     if success then
-        statusLabel.Text = "✅ Link copiado! (" .. tostring(method) .. ")"
+        statusLabel.Text = "✅ Copiado!"
         statusLabel.TextColor3 = Color3.fromRGB(100, 255, 140)
     else
-        -- Fallback visual: mostramos el link para copiar manual
-        statusLabel.Text = "📋 " .. KEY_LINK
-        statusLabel.TextColor3 = Color3.fromRGB(255, 220, 120)
+        statusLabel.Text = "❌ No se pudo copiar"
+        statusLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
     end
 
     task.delay(2, function()
@@ -260,7 +257,6 @@ UserInputService.InputChanged:Connect(function(input)
     end
 end)
 
--- Cleanup dragging
 UserInputService.InputEnded:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
         dragging = false
