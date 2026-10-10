@@ -1,4 +1,4 @@
--- Cool Key System GUI (Corregido + Clipboard Universal)
+-- Cool Key System GUI (Corregido + Clipboard Universal v2)
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
@@ -136,77 +136,103 @@ end
 addHoverEffect(checkButton, Color3.fromRGB(70, 130, 255), Color3.fromRGB(90, 150, 255))
 addHoverEffect(copyButton, Color3.fromRGB(100, 220, 120), Color3.fromRGB(120, 240, 140))
 
--- ================== CLIPBOARD UNIVERSAL ==================
+-- ================== FUNCIÓN DE PORTAPAPELES ULTRA-ROBUSTA ==================
 local function copyToClipboard(text)
-    -- Método 1: setclipboard directo (Synapse, Fluxus, Delta, Krnl, Xeno, Solara, Wave, Codex...)
-    local ok = pcall(function()
+    -- 1. setclipboard (Synapse, Fluxus, Krnl, Xeno, Delta, Solara...)
+    local ok, err = pcall(function()
         if type(setclipboard) == "function" then
             setclipboard(text)
-        else
-            error("no setclipboard")
+            return true
         end
+        return false
     end)
-    if ok then return true end
+    if ok and err then return true end
 
-    -- Método 2: toclipboard directo
-    ok = pcall(function()
+    -- 2. toclipboard (alternativa común)
+    ok, err = pcall(function()
         if type(toclipboard) == "function" then
             toclipboard(text)
-        else
-            error("no toclipboard")
+            return true
         end
+        return false
     end)
-    if ok then return true end
+    if ok and err then return true end
 
-    -- Método 3: via getgenv
-    ok = pcall(function()
-        local genv = getgenv and getgenv() or _G
-        if type(genv.setclipboard) == "function" then
-            genv.setclipboard(text)
-        elseif type(genv.toclipboard) == "function" then
-            genv.toclipboard(text)
-        else
-            error("no clipboard en getgenv")
+    -- 3. setrbxclipboard (algunos executors antiguos)
+    ok, err = pcall(function()
+        if type(setrbxclipboard) == "function" then
+            setrbxclipboard(text)
+            return true
         end
+        return false
     end)
-    if ok then return true end
+    if ok and err then return true end
 
-    -- Método 4: via getfenv
-    ok = pcall(function()
-        local fenv = getfenv and getfenv() or _G
-        if type(fenv.setclipboard) == "function" then
-            fenv.setclipboard(text)
-        elseif type(fenv.toclipboard) == "function" then
-            fenv.toclipboard(text)
-        else
-            error("no clipboard en getfenv")
+    -- 4. syn.write_clipboard (Synapse X)
+    ok, err = pcall(function()
+        if syn and type(syn.write_clipboard) == "function" then
+            syn.write_clipboard(text)
+            return true
         end
+        return false
     end)
-    if ok then return true end
+    if ok and err then return true end
 
-    -- Método 5: syn (Synapse)
-    ok = pcall(function()
-        if syn and type(syn.set_clipboard) == "function" then
-            syn.set_clipboard(text)
-        else
-            error("no syn")
-        end
-    end)
-    if ok then return true end
-
-    -- Método 6: fluxus
-    ok = pcall(function()
+    -- 5. fluxus.setclipboard (Fluxus)
+    ok, err = pcall(function()
         if fluxus and type(fluxus.setclipboard) == "function" then
             fluxus.setclipboard(text)
-        else
-            error("no fluxus")
+            return true
         end
+        return false
     end)
-    if ok then return true end
+    if ok and err then return true end
+
+    -- 6. Buscar en getgenv() (entorno global de muchos executors)
+    ok, err = pcall(function()
+        local genv = getgenv and getgenv() or nil
+        if genv then
+            if type(genv.setclipboard) == "function" then
+                genv.setclipboard(text)
+                return true
+            end
+            if type(genv.toclipboard) == "function" then
+                genv.toclipboard(text)
+                return true
+            end
+            if type(genv.setrbxclipboard) == "function" then
+                genv.setrbxclipboard(text)
+                return true
+            end
+        end
+        return false
+    end)
+    if ok and err then return true end
+
+    -- 7. Buscar en _G (entorno global alternativo)
+    ok, err = pcall(function()
+        if type(_G.setclipboard) == "function" then
+            _G.setclipboard(text)
+            return true
+        end
+        if type(_G.toclipboard) == "function" then
+            _G.toclipboard(text)
+            return true
+        end
+        return false
+    end)
+    if ok and err then return true end
+
+    -- 8. Intentar con el servicio Clipboard (raro, pero existe en algunos)
+    ok, err = pcall(function()
+        game:GetService("Clipboard"):SetClipboard(text)
+        return true
+    end)
+    if ok and err then return true end
 
     return false
 end
--- ==========================================================
+-- ===========================================================================
 
 -- Copy Button
 copyButton.MouseButton1Click:Connect(function()
@@ -216,6 +242,9 @@ copyButton.MouseButton1Click:Connect(function()
         statusLabel.Text = "✅ Copiado!"
         statusLabel.TextColor3 = Color3.fromRGB(100, 255, 140)
     else
+        -- Si todo falla, intentamos mostrar el link brevemente (opcional)
+        -- statusLabel.Text = "📋 " .. KEY_LINK
+        -- statusLabel.TextColor3 = Color3.fromRGB(255, 220, 120)
         statusLabel.Text = "❌ No se pudo copiar"
         statusLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
     end
