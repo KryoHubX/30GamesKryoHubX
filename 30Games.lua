@@ -1,4 +1,4 @@
--- Cool Key System GUI (Corregido)
+-- Cool Key System GUI (Corregido + Clipboard Universal)
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
@@ -120,7 +120,7 @@ statusLabel.Font = Enum.Font.Gotham
 statusLabel.Parent = mainFrame
 
 -- ================== LINK ==================
-local KEY_LINK = "sss"  -- ← Cambia esto
+local KEY_LINK = "sss"  -- ← Cambia esto por tu link real
 -- =========================================
 
 -- Hover Effects
@@ -136,16 +136,56 @@ end
 addHoverEffect(checkButton, Color3.fromRGB(70, 130, 255), Color3.fromRGB(90, 150, 255))
 addHoverEffect(copyButton, Color3.fromRGB(100, 220, 120), Color3.fromRGB(120, 240, 140))
 
+-- ================== CLIPBOARD UNIVERSAL ==================
+local function copyToClipboard(text)
+    -- Métodos usados por distintos executors
+    local methods = {
+        "setclipboard",    -- Synapse, Fluxus, Delta, Krnl, Script-Ware, Xeno, Solara
+        "toclipboard",     -- Algunos viejos
+        "set_clipboard",   -- Otros
+        "Clipboard",       -- Raro pero existe
+        "WriteClipboard",  -- Algunos más
+    }
+
+    for _, name in ipairs(methods) do
+        local fn
+        local ok1 = pcall(function() fn = rawget(getfenv(), name) end)
+        if not ok1 or type(fn) ~= "function" then
+            local ok2 = pcall(function() fn = rawget(_G, name) end)
+            if not ok2 then fn = nil end
+        end
+
+        if type(fn) == "function" then
+            local ok = pcall(fn, text)
+            if ok then
+                return true, name
+            end
+        end
+    end
+
+    -- Fallback: servicio Clipboard (si el executor lo expone)
+    local ok = pcall(function()
+        game:GetService("Clipboard"):SetClipboard(text)
+    end)
+    if ok then return true, "ClipboardService" end
+
+    return false, nil
+end
+-- ==========================================================
+
 -- Copy Button
 copyButton.MouseButton1Click:Connect(function()
-    if setclipboard then
-        setclipboard(KEY_LINK)
-        statusLabel.Text = "✅ Link copied!"
+    local success, method = copyToClipboard(KEY_LINK)
+
+    if success then
+        statusLabel.Text = "✅ Link copiado! (" .. tostring(method) .. ")"
         statusLabel.TextColor3 = Color3.fromRGB(100, 255, 140)
     else
-        statusLabel.Text = "❌ setclipboard not available"
-        statusLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
+        -- Fallback visual: mostramos el link para copiar manual
+        statusLabel.Text = "📋 " .. KEY_LINK
+        statusLabel.TextColor3 = Color3.fromRGB(255, 220, 120)
     end
+
     task.delay(2, function()
         statusLabel.Text = "Status: Ready"
         statusLabel.TextColor3 = Color3.fromRGB(160, 160, 170)
@@ -165,7 +205,7 @@ end
 
 checkButton.MouseButton1Click:Connect(function()
     local entered = keyInput.Text:upper():gsub("%s+", "")
-   
+
     if entered == "" then
         statusLabel.Text = "❌ Please enter a key!"
         statusLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
@@ -174,9 +214,9 @@ checkButton.MouseButton1Click:Connect(function()
 
     statusLabel.Text = "🔄 Checking..."
     statusLabel.TextColor3 = Color3.fromRGB(255, 200, 100)
-   
+
     task.wait(0.8)
-   
+
     if checkKey(entered) then
         statusLabel.Text = "✅ Success! Loading..."
         statusLabel.TextColor3 = Color3.fromRGB(100, 255, 140)
