@@ -29,7 +29,7 @@ uiStroke.Color = Color3.fromRGB(80, 120, 255)
 uiStroke.Thickness = 2
 uiStroke.Parent = mainFrame
 
--- Title
+-- Titlel
 local title = Instance.new("TextLabel")
 title.Name = "Title"
 title.Size = UDim2.new(1, 0, 0, 60)
